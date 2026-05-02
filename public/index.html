@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Democracy Desk AI</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -62,12 +64,12 @@
 
     <!-- Action Buttons -->
     <div class="flex md:flex-col gap-3 w-full md:w-auto px-2 md:px-0">
-      <a id="nav-btn-booth" href="https://www.google.com/maps/search/polling+booth+near+me" target="_blank" class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-purple-800 font-semibold py-3 md:py-4 px-4 rounded-2xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 border border-purple-100">
-        <span class="text-xl md:text-2xl">📍</span> <span class="hidden md:inline">Find My Booth</span><span class="md:hidden text-xs font-bold">Booth</span>
+      <a id="nav-btn-booth" href="https://www.google.com/maps/search/polling+booth+near+me" target="_blank" aria-label="Find My Booth on Google Maps" class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-purple-800 font-semibold py-3 md:py-4 px-4 rounded-2xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 border border-purple-100">
+        <span class="text-xl md:text-2xl" aria-hidden="true">📍</span> <span class="hidden md:inline">Find My Booth</span><span class="md:hidden text-xs font-bold">Booth</span>
       </a>
 
-      <a id="nav-btn-remind" target="_blank" href="#" class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white font-semibold py-3 md:py-4 px-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300">
-        <span class="text-xl md:text-2xl">📅</span> <span class="hidden md:inline">Set Reminder</span><span class="md:hidden text-xs font-bold">Remind</span>
+      <a id="nav-btn-remind" target="_blank" href="#" aria-label="Set Google Calendar Reminder" class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white font-semibold py-3 md:py-4 px-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300">
+        <span class="text-xl md:text-2xl" aria-hidden="true">📅</span> <span class="hidden md:inline">Set Reminder</span><span class="md:hidden text-xs font-bold">Remind</span>
       </a>
     </div>
 
@@ -108,27 +110,24 @@
       <!-- Messages Container -->
       <div id="chat-history" class="flex-grow p-4 md:p-8 overflow-y-auto scrollbar-hide flex flex-col gap-6">
         <!-- Initial message -->
-        <div class="chat-bubble-ai p-4 shadow-sm self-start max-w-[90%] md:max-w-[75%]">
-          <p class="text-sm md:text-base leading-relaxed font-medium">
-            Welcome to <strong class="text-purple-800">Democracy Desk AI</strong>! 🇮🇳 <br><br>
-            I'm here to guide you through the upcoming elections. Ask me how to register, what documents to bring, or simply to find your polling station!
-          </p>
+        <div class="chat-bubble-ai p-4 shadow-sm self-start max-w-[90%] md:max-w-[75%] min-h-[6rem]">
+          <p class="text-sm md:text-base leading-relaxed font-medium"><span id="welcome-msg"></span></p>
         </div>
       </div>
 
       <!-- Suggested Questions -->
       <div class="px-3 md:px-5 pb-2 flex flex-wrap gap-2 justify-center">
-        <button type="button" class="suggested-btn px-4 py-1.5 rounded-full border-2 border-purple-600 text-orange-600 font-medium text-xs md:text-sm hover:bg-purple-50 transition-colors shadow-sm">How do I register?</button>
-        <button type="button" class="suggested-btn px-4 py-1.5 rounded-full border-2 border-purple-600 text-orange-600 font-medium text-xs md:text-sm hover:bg-purple-50 transition-colors shadow-sm">What documents do I need?</button>
-        <button type="button" class="suggested-btn px-4 py-1.5 rounded-full border-2 border-purple-600 text-orange-600 font-medium text-xs md:text-sm hover:bg-purple-50 transition-colors shadow-sm">Who are the candidates?</button>
+        <button type="button" class="suggested-btn px-4 py-1.5 rounded-full border-2 border-purple-600 text-orange-600 font-medium text-xs md:text-sm hover:bg-purple-50 focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 focus:outline-none transition-colors shadow-sm">How do I register?</button>
+        <button type="button" class="suggested-btn px-4 py-1.5 rounded-full border-2 border-purple-600 text-orange-600 font-medium text-xs md:text-sm hover:bg-purple-50 focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 focus:outline-none transition-colors shadow-sm">What documents do I need?</button>
+        <button type="button" class="suggested-btn px-4 py-1.5 rounded-full border-2 border-purple-600 text-orange-600 font-medium text-xs md:text-sm hover:bg-purple-50 focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 focus:outline-none transition-colors shadow-sm">Who are the candidates?</button>
       </div>
 
       <!-- Input Area -->
       <div class="p-3 md:p-5 bg-white border-t border-slate-100">
         <form id="chat-form" class="flex items-center gap-3 w-full relative">
-          <input type="text" id="chat-input" class="w-full bg-slate-100 border border-slate-200 rounded-full py-3 md:py-4 pl-6 pr-14 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm md:text-base text-slate-800 placeholder-slate-400 shadow-inner transition" placeholder="Type your question..." autocomplete="off" required>
-          <button type="submit" class="absolute right-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-full p-2.5 shadow-md hover:shadow-lg transition-transform hover:scale-110 duration-300 focus:outline-none">
-            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+          <input type="text" id="chat-input" aria-label="Type your question here" class="w-full bg-slate-100 border border-slate-200 rounded-full py-3 md:py-4 pl-6 pr-14 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm md:text-base text-slate-800 placeholder-slate-400 shadow-inner transition" placeholder="Type your question..." autocomplete="off" required>
+          <button type="submit" aria-label="Send message" class="absolute right-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-full p-2.5 shadow-md hover:shadow-lg transition-transform hover:scale-110 duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
           </button>
         </form>
       </div>
@@ -154,6 +153,13 @@
 
     // Initialization
     async function init() {
+      // Start typing effect immediately for perceived performance
+      new Typed('#welcome-msg', {
+        strings: ["Welcome to <strong class='text-purple-800'>Democracy Desk AI</strong>! 🇮🇳 <br><br>I'm here to guide you through the upcoming elections. Ask me how to register, what documents to bring, or simply to find your polling station!"],
+        typeSpeed: 15,
+        showCursor: false
+      });
+
       try {
         const configRes = await fetch('/api/config');
         const config = await configRes.json();
@@ -200,6 +206,16 @@
         const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dateStr}T020000Z/${dateStr}T120000Z&details=${details}`;
         
         navBtnRemind.href = calUrl;
+        
+        // Add Confetti logic to reminder button
+        navBtnRemind.addEventListener('click', () => {
+          confetti({
+            particleCount: 150,
+            spread: 80,
+            origin: { y: 0.6 },
+            colors: ['#6b21a8', '#f97316', '#ffffff']
+          });
+        });
       }
     }
 
