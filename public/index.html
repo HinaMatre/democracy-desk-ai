@@ -3,101 +3,152 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Election Process Education Assistant</title>
-  <!-- Tailwind CSS via CDN for rapid prototyping -->
+  <title>Democracy Desk AI</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Custom simple styling for the chat container */
-    #chat-history {
-      scrollbar-width: thin;
-      scrollbar-color: #cbd5e1 transparent;
+    body {
+      font-family: 'Poppins', sans-serif;
+      /* Vibrant Royal Purple to Soft Lavender gradient */
+      background: linear-gradient(135deg, #f3e8ff 0%, #e0e7ff 100%);
     }
-    #chat-history::-webkit-scrollbar {
-      width: 6px;
+    .glass {
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
     }
-    #chat-history::-webkit-scrollbar-thumb {
-      background-color: #cbd5e1;
-      border-radius: 3px;
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    /* AI Bubble: soft grey/white */
+    .chat-bubble-ai {
+      background-color: #f8fafc;
+      color: #334155;
+      border-radius: 1.5rem 1.5rem 1.5rem 0.25rem;
+      border: 1px solid #e2e8f0;
+    }
+    /* User Bubble: Royal Purple */
+    .chat-bubble-user {
+      background-color: #6b21a8; 
+      color: white;
+      border-radius: 1.5rem 1.5rem 0.25rem 1.5rem;
     }
   </style>
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col font-sans">
+<body class="h-screen w-screen overflow-hidden flex flex-col md:flex-row text-slate-800">
 
-  <!-- Header -->
-  <header class="bg-indigo-600 text-white p-6 shadow-md">
-    <div class="max-w-4xl mx-auto flex justify-between items-center">
-      <div>
-        <h1 class="text-2xl font-bold">Democracy Desk AI</h1>
-        <p class="text-indigo-200 text-sm mt-1">Your guide to the upcoming elections.</p>
-      </div>
-      <!-- Remind Me Button Container (logic initialized in script) -->
-      <div id="remind-me-container" class="hidden">
-        <a id="remind-me-btn" target="_blank" href="#" class="bg-white text-indigo-600 px-4 py-2 rounded-full font-semibold text-sm hover:bg-indigo-50 transition shadow">
-          📅 Remind Me to Vote
-        </a>
-      </div>
-    </div>
-  </header>
-
-  <main class="flex-grow max-w-4xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+  <!-- Desktop Sidebar / Mobile Bottom Nav -->
+  <nav class="glass flex md:flex-col justify-around md:justify-start items-center md:items-stretch w-full md:w-80 h-20 md:h-full p-3 md:p-6 fixed bottom-0 md:relative z-20 shadow-[0_-4px_10px_rgba(0,0,0,0.05)] md:shadow-xl">
     
-    <!-- Left Column: Chat Assistant (Takes up 2/3 width on md+) -->
-    <section class="md:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col overflow-hidden h-[600px]">
-      <div class="bg-indigo-50 p-4 border-b border-indigo-100">
-        <h2 class="font-semibold text-indigo-800 flex items-center">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
-          Ask the Assistant
-        </h2>
+    <!-- Branding (Hidden on mobile nav) -->
+    <div class="hidden md:block mb-8 text-center mt-4">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 text-white shadow-lg mb-4">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
       </div>
-      
-      <!-- Context Toggles for testing -->
-      <div class="bg-gray-50 p-3 border-b text-xs flex gap-4 text-gray-600 justify-center">
-        <label class="flex items-center gap-1 cursor-pointer">
-          <input type="checkbox" id="context-under18" class="rounded text-indigo-600 focus:ring-indigo-500">
-          <span>I am under 18</span>
-        </label>
-        <label class="flex items-center gap-1 cursor-pointer">
-          <input type="checkbox" id="context-experienced" class="rounded text-indigo-600 focus:ring-indigo-500">
-          <span>Experienced Voter</span>
-        </label>
-      </div>
+      <h1 class="text-2xl font-bold text-purple-900 leading-tight">Democracy<br>Desk AI</h1>
+    </div>
 
-      <div id="chat-history" class="flex-grow p-4 overflow-y-auto flex flex-col gap-3">
-        <div class="bg-indigo-100 text-indigo-900 p-3 rounded-lg rounded-tl-none max-w-[80%] self-start text-sm">
-          Hello! I'm your Election Assistant. Ask me anything about how to vote, key dates, or finding your polling station!
+    <!-- Election Countdown Card (Sunrise Orange) -->
+    <div class="hidden md:flex flex-col bg-gradient-to-br from-orange-400 to-orange-600 text-white rounded-2xl p-5 mb-8 shadow-lg transform transition hover:-translate-y-1">
+      <h3 class="text-xs font-semibold uppercase tracking-widest opacity-90 mb-1">Polling Day</h3>
+      <div id="countdown-date" class="text-2xl font-bold mb-1 tracking-tight">Loading...</div>
+      <p class="text-sm font-medium opacity-90" id="countdown-timer">Calculating...</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex md:flex-col gap-3 w-full md:w-auto px-2 md:px-0">
+      <button id="nav-btn-booth" class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-purple-800 font-semibold py-3 md:py-4 px-4 rounded-2xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 border border-purple-100">
+        <span class="text-xl md:text-2xl">📍</span> <span class="hidden md:inline">Find My Booth</span><span class="md:hidden text-xs font-bold">Booth</span>
+      </button>
+
+      <a id="nav-btn-remind" target="_blank" href="#" class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white font-semibold py-3 md:py-4 px-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300">
+        <span class="text-xl md:text-2xl">📅</span> <span class="hidden md:inline">Set Reminder</span><span class="md:hidden text-xs font-bold">Remind</span>
+      </a>
+    </div>
+
+    <!-- Context toggles (Desktop testing utility) -->
+    <div class="hidden md:block mt-auto bg-white/40 rounded-2xl p-4 border border-white">
+      <p class="text-[10px] font-bold text-purple-800 mb-2 uppercase tracking-wider">Demo Context</p>
+      <label class="flex items-center gap-2 cursor-pointer text-sm mb-2 text-slate-700 font-medium">
+        <input type="checkbox" id="context-under18" class="rounded border-slate-300 text-purple-600 focus:ring-purple-500 w-4 h-4">
+        <span>Under 18</span>
+      </label>
+      <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-700 font-medium">
+        <input type="checkbox" id="context-experienced" class="rounded border-slate-300 text-purple-600 focus:ring-purple-500 w-4 h-4">
+        <span>Experienced Voter</span>
+      </label>
+    </div>
+
+  </nav>
+
+  <!-- Main Chat Window -->
+  <main class="flex-grow flex flex-col h-[calc(100vh-5rem)] md:h-screen relative max-w-5xl mx-auto w-full p-0 md:p-6 pb-0">
+    
+    <!-- Mobile Header -->
+    <div class="md:hidden glass p-4 flex justify-between items-center z-10 border-b border-white/30 rounded-b-2xl shadow-sm">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 text-white flex items-center justify-center shadow-md">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
+        </div>
+        <div>
+          <h1 class="text-base font-bold text-purple-900 leading-tight">Democracy Desk</h1>
+          <div id="mobile-countdown" class="text-[10px] font-bold uppercase tracking-wider text-orange-600 mt-0.5">Polling Day: Loading...</div>
         </div>
       </div>
+    </div>
+
+    <!-- Chat Area -->
+    <div class="flex-grow bg-white/70 backdrop-blur-xl md:rounded-3xl shadow-2xl border border-white/60 flex flex-col overflow-hidden md:m-0 mt-4 mx-4 rounded-3xl z-10 h-full">
       
-      <div class="p-4 border-t bg-gray-50">
-        <form id="chat-form" class="flex gap-2">
-          <input type="text" id="chat-input" class="flex-grow px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="e.g., Where do I vote?" required autocomplete="off">
-          <button type="submit" class="bg-indigo-600 text-white px-5 py-2 rounded-full hover:bg-indigo-700 transition focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-            Send
+      <!-- Messages Container -->
+      <div id="chat-history" class="flex-grow p-4 md:p-8 overflow-y-auto scrollbar-hide flex flex-col gap-6">
+        <!-- Initial message -->
+        <div class="chat-bubble-ai p-4 shadow-sm self-start max-w-[90%] md:max-w-[75%]">
+          <p class="text-sm md:text-base leading-relaxed font-medium">
+            Welcome to <strong class="text-purple-800">Democracy Desk AI</strong>! 🇮🇳 <br><br>
+            I'm here to guide you through the upcoming elections. Ask me how to register, what documents to bring, or simply to find your polling station!
+          </p>
+        </div>
+      </div>
+
+      <!-- Input Area -->
+      <div class="p-3 md:p-5 bg-white border-t border-slate-100">
+        <form id="chat-form" class="flex items-center gap-3 w-full relative">
+          <input type="text" id="chat-input" class="w-full bg-slate-100 border border-slate-200 rounded-full py-3 md:py-4 pl-6 pr-14 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm md:text-base text-slate-800 placeholder-slate-400 shadow-inner transition" placeholder="Type your question..." autocomplete="off" required>
+          <button type="submit" class="absolute right-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-full p-2.5 shadow-md hover:shadow-lg transition-transform hover:scale-110 duration-300 focus:outline-none">
+            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
           </button>
         </form>
       </div>
-    </section>
 
-    <!-- Right Column: Maps & Info -->
-    <section class="md:col-span-1 flex flex-col gap-6">
-      
-      <!-- Booth Locator -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="p-4 border-b border-gray-100">
-          <h2 class="font-semibold text-gray-800 flex items-center">
-            <svg class="w-5 h-5 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-            Booth Locator
-          </h2>
-          <p class="text-xs text-gray-500 mt-1">Placeholder for your polling station</p>
-        </div>
-        <div class="w-full h-48 bg-gray-200" id="map-container">
-          <!-- Iframe injected via JS to use the API key securely -->
-          <div class="w-full h-full flex items-center justify-center text-sm text-gray-500">Loading Map...</div>
-        </div>
-      </div>
+    </div>
 
-    </section>
   </main>
+
+  <!-- Map Modal -->
+  <div id="map-modal" class="fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 bg-slate-900/40 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-3xl overflow-hidden transform scale-95 transition-transform duration-300 border border-white" id="map-modal-content">
+      <div class="p-5 md:p-6 border-b border-slate-100 flex justify-between items-center bg-purple-50">
+        <h3 class="text-xl md:text-2xl font-bold text-purple-900 flex items-center gap-2">
+          <span class="text-orange-500">📍</span> Booth Locator
+        </h3>
+        <button id="close-modal" class="text-slate-400 hover:text-slate-800 bg-white rounded-full p-2 shadow-sm hover:shadow-md transition-all duration-200">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div class="w-full h-[60vh] md:h-96 bg-slate-100 relative" id="map-container">
+        <div class="absolute inset-0 flex items-center justify-center text-slate-500 font-medium">Loading Interactive Map...</div>
+      </div>
+      <div class="p-4 bg-slate-50 text-center text-sm font-medium text-slate-600 border-t border-slate-200">
+        Showing your designated polling station. Remember to bring your Voter ID!
+      </div>
+    </div>
+  </div>
 
   <script>
     // Elements
@@ -106,23 +157,28 @@
     const chatHistory = document.getElementById('chat-history');
     const under18Check = document.getElementById('context-under18');
     const experiencedCheck = document.getElementById('context-experienced');
-    const remindMeContainer = document.getElementById('remind-me-container');
-    const remindMeBtn = document.getElementById('remind-me-btn');
+    const navBtnBooth = document.getElementById('nav-btn-booth');
+    const navBtnRemind = document.getElementById('nav-btn-remind');
+    const mapModal = document.getElementById('map-modal');
+    const mapModalContent = document.getElementById('map-modal-content');
+    const closeModal = document.getElementById('close-modal');
     const mapContainer = document.getElementById('map-container');
+    const countdownDate = document.getElementById('countdown-date');
+    const countdownTimer = document.getElementById('countdown-timer');
+    const mobileCountdown = document.getElementById('mobile-countdown');
 
-    // Load initial configurations and data
+    let isTyping = false;
+
+    // Initialization
     async function init() {
       try {
-        // 1. Fetch config (API keys for frontend if needed)
         const configRes = await fetch('/api/config');
         const config = await configRes.json();
         
-        // 2. Fetch election data for the Calendar Link
         const dataRes = await fetch('/api/election-data');
         const electionData = await dataRes.json();
-        setupCalendarButton(electionData);
-
-        // 3. Setup Google Map Embed (using a placeholder address "New Delhi")
+        
+        setupCalendarAndCountdown(electionData);
         setupMap(config.googleMapsApiKey);
 
       } catch (err) {
@@ -130,24 +186,41 @@
       }
     }
 
-    // Generate Google Calendar Link
-    function setupCalendarButton(data) {
+    function setupCalendarAndCountdown(data) {
       if(data && data.dates && data.dates.polling) {
-        const pollingDateStr = data.dates.polling.replace(/-/g, ''); // format: YYYYMMDD
+        const pollingStr = data.dates.polling;
+        
+        // Update UI Text
+        const dateObj = new Date(pollingStr);
+        countdownDate.textContent = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        mobileCountdown.textContent = `Polling: ${countdownDate.textContent}`;
+        
+        // Countdown logic
+        const updateTimer = () => {
+          const now = new Date().getTime();
+          const targetDate = dateObj.getTime();
+          const distance = targetDate - now;
+          if (distance < 0) {
+            countdownTimer.textContent = "Election Day is Here!";
+            return;
+          }
+          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          countdownTimer.textContent = `${days} days remaining`;
+        };
+        updateTimer();
+        setInterval(updateTimer, 86400000);
+
+        // Calendar Link
+        const dateStr = pollingStr.replace(/-/g, '');
         const title = encodeURIComponent(`${data.election} - Polling Day!`);
-        const details = encodeURIComponent('Remember to go out and vote today!');
+        const details = encodeURIComponent('Democracy Desk Reminder: Remember to go vote today! Bring your Voter ID.');
+        const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dateStr}T020000Z/${dateStr}T120000Z&details=${details}`;
         
-        // Google Calendar Add Event URL format
-        const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${pollingDateStr}T020000Z/${pollingDateStr}T120000Z&details=${details}`;
-        
-        remindMeBtn.href = calUrl;
-        remindMeContainer.classList.remove('hidden');
+        navBtnRemind.href = calUrl;
       }
     }
 
-    // Setup Google Maps Embed
     function setupMap(apiKey) {
-      // Using 'New Delhi' as a generic placeholder for the hackathon UI
       const query = encodeURIComponent("New Delhi, India");
       mapContainer.innerHTML = `<iframe 
         width="100%" 
@@ -155,34 +228,98 @@
         style="border:0" 
         loading="lazy" 
         allowfullscreen 
+        referrerpolicy="no-referrer-when-downgrade"
         src="https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${query}">
       </iframe>`;
     }
 
-    // Helper to add messages to UI
-    function appendMessage(text, isUser) {
-      const div = document.createElement('div');
-      div.className = isUser 
-        ? "bg-indigo-600 text-white p-3 rounded-lg rounded-tr-none max-w-[80%] self-end text-sm" 
-        : "bg-indigo-100 text-indigo-900 p-3 rounded-lg rounded-tl-none max-w-[80%] self-start text-sm whitespace-pre-wrap";
-      div.textContent = text;
-      chatHistory.appendChild(div);
-      chatHistory.scrollTop = chatHistory.scrollHeight;
+    // Modal Handlers
+    function openModal() {
+      mapModal.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => mapModalContent.classList.remove('scale-95'), 10);
+    }
+    
+    function closeMapModal() {
+      mapModalContent.classList.add('scale-95');
+      setTimeout(() => mapModal.classList.add('opacity-0', 'pointer-events-none'), 300);
     }
 
-    // Chat form submission
+    navBtnBooth.addEventListener('click', openModal);
+    closeModal.addEventListener('click', closeMapModal);
+    mapModal.addEventListener('click', (e) => {
+      if(e.target === mapModal) closeMapModal();
+    });
+
+    // Chat UI Handlers
+    function appendMessage(text, isUser) {
+      const wrapper = document.createElement('div');
+      wrapper.className = `p-4 md:p-5 shadow-sm max-w-[90%] md:max-w-[75%] text-sm md:text-base leading-relaxed font-medium ${
+        isUser 
+          ? "chat-bubble-user self-end ml-auto" 
+          : "chat-bubble-ai self-start"
+      }`;
+      
+      // Basic formatting
+      const formattedText = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
+        
+      wrapper.innerHTML = formattedText;
+      
+      // Smooth animation
+      wrapper.style.opacity = '0';
+      wrapper.style.transform = 'translateY(15px)';
+      wrapper.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+      
+      chatHistory.appendChild(wrapper);
+      
+      requestAnimationFrame(() => {
+        wrapper.style.opacity = '1';
+        wrapper.style.transform = 'translateY(0)';
+      });
+      
+      setTimeout(() => {
+        chatHistory.scrollTo({ top: chatHistory.scrollHeight, behavior: 'smooth' });
+      }, 50);
+      
+      return wrapper;
+    }
+
+    function showTypingIndicator() {
+      const indicator = document.createElement('div');
+      indicator.id = 'typing-indicator';
+      indicator.className = 'chat-bubble-ai p-4 self-start max-w-[80%] flex gap-2 items-center shadow-sm';
+      indicator.innerHTML = `
+        <div class="w-2.5 h-2.5 bg-slate-400 rounded-full animate-bounce"></div>
+        <div class="w-2.5 h-2.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.15s"></div>
+        <div class="w-2.5 h-2.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.3s"></div>
+      `;
+      chatHistory.appendChild(indicator);
+      chatHistory.scrollTo({ top: chatHistory.scrollHeight, behavior: 'smooth' });
+    }
+
+    function hideTypingIndicator() {
+      const indicator = document.getElementById('typing-indicator');
+      if(indicator) indicator.remove();
+    }
+
+    // Submit handler
     chatForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if(isTyping) return;
+      
       const message = chatInput.value.trim();
       if (!message) return;
 
       appendMessage(message, true);
       chatInput.value = '';
+      
+      isTyping = true;
+      showTypingIndicator();
 
-      // Prepare context
       const userContext = {
-        isUnder18: under18Check.checked,
-        isExperienced: experiencedCheck.checked
+        isUnder18: under18Check ? under18Check.checked : false,
+        isExperienced: experiencedCheck ? experiencedCheck.checked : false
       };
 
       try {
@@ -193,19 +330,27 @@
         });
         
         const data = await res.json();
+        hideTypingIndicator();
+        
         if(data.reply) {
           appendMessage(data.reply, false);
+          
+          // Auto-trigger modal if the bot explicitly mentions the booth locator
+          if(data.reply.toLowerCase().includes('booth locator')) {
+            setTimeout(openModal, 2000);
+          }
         } else {
           appendMessage("Sorry, I didn't get a response.", false);
         }
       } catch (err) {
-        appendMessage("Network error. Could not connect to assistant.", false);
+        hideTypingIndicator();
+        appendMessage("Network error. Could not connect to the server.", false);
+      } finally {
+        isTyping = false;
       }
     });
 
-    // Run initialization
     init();
-
   </script>
 </body>
 </html>
