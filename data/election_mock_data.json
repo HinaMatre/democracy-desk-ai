@@ -1,0 +1,9 @@
+{
+  "election": "Indian General Elections",
+  "year": 2026,
+  "dates": {
+    "registrationDeadline": "2026-05-10",
+    "polling": "2026-05-25",
+    "results": "2026-06-04"
+  }
+}

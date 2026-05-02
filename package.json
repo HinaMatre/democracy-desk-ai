@@ -1,0 +1,24 @@
+{
+  "name": "democracy-desk-ai",
+  "version": "1.0.0",
+  "description": "A context-aware AI assistant designed to simplify the election process for both first-time and experienced voters through personalized guidance and real-time civic data.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HinaMatre/democracy-desk-ai.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HinaMatre/democracy-desk-ai/issues"
+  },
+  "homepage": "https://github.com/HinaMatre/democracy-desk-ai#readme",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  }
+}
