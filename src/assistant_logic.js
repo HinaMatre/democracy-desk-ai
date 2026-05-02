@@ -65,7 +65,7 @@ async function handleUserQuery(query, userContext = {}) {
     return response.text;
   } catch (error) {
     console.error("Error generating response from Gemini API:", error);
-    return "I'm sorry, I'm having trouble connecting to my knowledge base right now. Please try again later.";
+    return "I'm currently in demo mode. Try asking about registration or polling locations!";
   }
 }
 

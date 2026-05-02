@@ -11,7 +11,12 @@ const PORT = process.env.PORT || 3000;
 app.use(express.static('public'));
 app.use(express.json());
 
-// Endpoint to provide configuration to frontend
+/**
+ * GET /api/config
+ * Provides configuration variables to the frontend.
+ * @param {express.Request} req - The Express request object.
+ * @param {express.Response} res - The Express response object.
+ */
 app.get('/api/config', (req, res) => {
   res.json({
     // We send the maps API key to the frontend. Note: In production, restrict this key via Google Cloud Console
@@ -19,7 +24,12 @@ app.get('/api/config', (req, res) => {
   });
 });
 
-// Endpoint to provide election data
+/**
+ * GET /api/election-data
+ * Reads and returns the mock election data JSON file.
+ * @param {express.Request} req - The Express request object.
+ * @param {express.Response} res - The Express response object.
+ */
 app.get('/api/election-data', (req, res) => {
   const electionDataPath = path.join(__dirname, 'data/election_mock_data.json');
   try {
@@ -30,7 +40,12 @@ app.get('/api/election-data', (req, res) => {
   }
 });
 
-// Endpoint for chat interaction
+/**
+ * POST /api/chat
+ * Handles incoming chat queries from the frontend and communicates with the Gemini API.
+ * @param {express.Request} req - The Express request object containing query and userContext.
+ * @param {express.Response} res - The Express response object.
+ */
 app.post('/api/chat', async (req, res) => {
   const { query, userContext } = req.body;
   if (!query) {
