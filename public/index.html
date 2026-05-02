@@ -77,11 +77,15 @@
     <div class="hidden md:block mt-auto bg-white/40 rounded-2xl p-4 border border-white">
       <p class="text-[10px] font-bold text-purple-800 mb-2 uppercase tracking-wider">Demo Context</p>
       <label class="flex items-center gap-2 cursor-pointer text-sm mb-2 text-slate-700 font-medium">
-        <input type="checkbox" id="context-under18" class="rounded border-slate-300 text-purple-600 focus:ring-purple-500 w-4 h-4">
+        <input type="radio" name="voter-type" id="context-default" class="border-slate-300 text-purple-600 focus:ring-purple-500 w-4 h-4" checked>
+        <span>Newcomer (Default)</span>
+      </label>
+      <label class="flex items-center gap-2 cursor-pointer text-sm mb-2 text-slate-700 font-medium">
+        <input type="radio" name="voter-type" id="context-under18" class="border-slate-300 text-purple-600 focus:ring-purple-500 w-4 h-4">
         <span>Under 18</span>
       </label>
       <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-700 font-medium">
-        <input type="checkbox" id="context-experienced" class="rounded border-slate-300 text-purple-600 focus:ring-purple-500 w-4 h-4">
+        <input type="radio" name="voter-type" id="context-experienced" class="border-slate-300 text-purple-600 focus:ring-purple-500 w-4 h-4">
         <span>Experienced Voter</span>
       </label>
     </div>
