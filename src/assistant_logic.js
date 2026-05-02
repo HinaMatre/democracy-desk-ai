@@ -23,11 +23,19 @@ async function handleUserQuery(query, userContext = {}) {
   // Check if the user is asking about election dates
   const lowerQuery = query.toLowerCase();
   // Simple intent matching for election dates
-  if (lowerQuery.includes('when is the election') || lowerQuery.includes('election date') || lowerQuery.includes('key dates')) {
-    return `The ${electionData.election} (${electionData.year}) key dates are:\n` +
+  if (lowerQuery.includes('when is the election') || lowerQuery.includes('election date') || lowerQuery.includes('key dates') || lowerQuery.includes('remind me of the date')) {
+    let response = `The ${electionData.election} (${electionData.year}) key dates are:\n` +
            `- Registration Deadline: ${electionData.dates.registrationDeadline}\n` +
            `- Polling Day: ${electionData.dates.polling}\n` +
            `- Results Day: ${electionData.dates.results}`;
+    if (lowerQuery.includes('remind me')) {
+      response += `\n\nTip: You can use the "Remind Me" button in the app to quickly add the Polling Day to your Google Calendar!`;
+    }
+    return response;
+  }
+
+  if (lowerQuery.includes('where do i vote') || lowerQuery.includes('polling station') || lowerQuery.includes('booth')) {
+    return "You can find your exact polling station using the 'Booth Locator' section in this app. It uses Google Maps to help you find the location quickly!";
   }
 
   // Construct system instructions based on user context
