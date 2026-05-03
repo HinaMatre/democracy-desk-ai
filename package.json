@@ -4,6 +4,7 @@
   "description": "A context-aware AI assistant designed to simplify the election process for both first-time and experienced voters through personalized guidance and real-time civic data.",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
