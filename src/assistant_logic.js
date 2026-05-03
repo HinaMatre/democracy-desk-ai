@@ -38,8 +38,10 @@ async function handleUserQuery(query, userContext = {}) {
     return "You can find your exact polling station using the 'Booth Locator' section in this app. It uses Google Maps to help you find the location quickly!";
   }
 
+  const selectedCountry = userContext.selectedCountry || 'India';
+
   // Construct system instructions based on user context
-  let systemInstruction = `You are a helpful and educational Election Process Assistant. `;
+  let systemInstruction = `You are a global election expert. The user is currently interested in ${selectedCountry}. Tailor all responses to this nation's specific election laws, official portals (e.g., ECI for India, Vote.gov for USA, TSE for Brazil), and their 2026 election calendar. Ensure you specifically mention registration deadlines and ID requirements relevant to ${selectedCountry}. `;
 
   // Pivot for users under 18
   if (userContext.isUnder18) {

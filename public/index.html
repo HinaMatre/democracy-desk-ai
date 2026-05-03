@@ -75,7 +75,22 @@
 
     <!-- Context toggles (Desktop testing utility) -->
     <div class="hidden md:block mt-auto bg-white/40 rounded-2xl p-4 border border-white">
-      <p class="text-[10px] font-bold text-purple-800 mb-2 uppercase tracking-wider">Demo Context</p>
+      <p class="text-[10px] font-bold text-purple-800 mb-2 uppercase tracking-wider">Context Settings</p>
+      
+      <div class="mb-3">
+        <label for="country-selector" class="sr-only">Select Country</label>
+        <select id="country-selector" class="w-full bg-white border border-slate-200 text-slate-700 text-sm rounded-xl focus:ring-purple-500 focus:border-purple-500 block p-2 outline-none shadow-sm transition-all hover:border-purple-300 cursor-pointer">
+          <option value="India">India</option>
+          <option value="USA">USA</option>
+          <option value="Brazil">Brazil</option>
+          <option value="Colombia">Colombia</option>
+          <option value="Germany">Germany</option>
+          <option value="Sweden">Sweden</option>
+          <option value="Japan">Japan</option>
+        </select>
+      </div>
+
+      <p class="text-[10px] font-bold text-purple-800 mb-2 uppercase tracking-wider border-t border-white/50 pt-3">Voter Type</p>
       <label class="flex items-center gap-2 cursor-pointer text-sm mb-2 text-slate-700 font-medium">
         <input type="radio" name="voter-type" id="context-default" class="border-slate-300 text-purple-600 focus:ring-purple-500 w-4 h-4" checked>
         <span>Newcomer (Default)</span>
@@ -299,9 +314,11 @@
       isTyping = true;
       showTypingIndicator();
 
+      const countrySelector = document.getElementById('country-selector');
       const userContext = {
         isUnder18: under18Check ? under18Check.checked : false,
-        isExperienced: experiencedCheck ? experiencedCheck.checked : false
+        isExperienced: experiencedCheck ? experiencedCheck.checked : false,
+        selectedCountry: countrySelector ? countrySelector.value : 'India'
       };
 
       try {
