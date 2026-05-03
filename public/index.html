@@ -155,8 +155,13 @@
       <!-- Input Area -->
       <div class="p-3 md:p-5 bg-white border-t border-slate-100">
         <form id="chat-form" class="flex items-center gap-3 w-full relative">
-          <input type="text" id="chat-input" aria-label="Type your question here" class="w-full bg-slate-100 border border-slate-200 rounded-full py-3 md:py-4 pl-6 pr-14 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm md:text-base text-slate-800 placeholder-slate-400 shadow-inner transition" placeholder="Type your question..." autocomplete="off" required>
-          <button type="submit" aria-label="Send message" class="absolute right-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-full p-2.5 shadow-md hover:shadow-lg transition-transform hover:scale-110 duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+          <input type="text" id="chat-input" aria-label="Type your question here" class="w-full bg-slate-100 border border-slate-200 rounded-full py-3 md:py-4 pl-6 pr-24 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm md:text-base text-slate-800 placeholder-slate-400 shadow-inner transition" placeholder="Type your question..." autocomplete="off" required>
+          
+          <button type="button" id="voice-btn" aria-label="Voice input" class="absolute right-[3.5rem] md:right-16 bg-slate-200 hover:bg-slate-300 text-purple-700 rounded-full p-2 md:p-2.5 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 hidden items-center justify-center">
+            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+          </button>
+
+          <button type="submit" aria-label="Send message" class="absolute right-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-full p-2 md:p-2.5 shadow-md hover:shadow-lg transition-transform hover:scale-110 duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
             <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
           </button>
         </form>
@@ -180,6 +185,7 @@
     const suggestedBtns = document.querySelectorAll('.suggested-btn');
     const countrySelector = document.getElementById('country-selector');
     const mobileCountrySelector = document.getElementById('mobile-country-selector');
+    const voiceBtn = document.getElementById('voice-btn');
 
     // Sync country selectors
     if (mobileCountrySelector && countrySelector) {
@@ -365,6 +371,57 @@
         isTyping = false;
       }
     });
+
+    // Voice Input Logic
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition && voiceBtn) {
+      voiceBtn.classList.remove('hidden');
+      voiceBtn.classList.add('flex');
+      
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      
+      let isRecording = false;
+
+      voiceBtn.addEventListener('click', () => {
+        if (isRecording) {
+          recognition.stop();
+        } else {
+          try { recognition.start(); } catch(e) {}
+        }
+      });
+
+      recognition.onstart = () => {
+        isRecording = true;
+        voiceBtn.classList.add('animate-pulse', 'bg-red-100', 'text-red-600');
+        voiceBtn.classList.remove('bg-slate-200', 'text-purple-700', 'hover:bg-slate-300');
+        chatInput.placeholder = "Listening...";
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        chatInput.value = transcript;
+      };
+
+      recognition.onend = () => {
+        isRecording = false;
+        voiceBtn.classList.remove('animate-pulse', 'bg-red-100', 'text-red-600');
+        voiceBtn.classList.add('bg-slate-200', 'text-purple-700', 'hover:bg-slate-300');
+        chatInput.placeholder = "Type your question...";
+      };
+
+      recognition.onerror = (event) => {
+        console.error("Speech recognition error", event.error);
+        if(event.error === 'not-allowed') {
+            alert('Microphone access is blocked. Please allow microphone permissions in your browser.');
+        }
+        isRecording = false;
+        voiceBtn.classList.remove('animate-pulse', 'bg-red-100', 'text-red-600');
+        voiceBtn.classList.add('bg-slate-200', 'text-purple-700', 'hover:bg-slate-300');
+        chatInput.placeholder = "Type your question...";
+      };
+    }
 
     init();
   </script>

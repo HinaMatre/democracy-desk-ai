@@ -7,6 +7,8 @@
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
+    --color-red-100: oklch(93.6% 0.032 17.717);
+    --color-red-600: oklch(57.7% 0.245 27.325);
     --color-orange-400: oklch(75% 0.183 55.934);
     --color-orange-500: oklch(70.5% 0.213 47.604);
     --color-orange-600: oklch(64.6% 0.222 41.116);
@@ -239,6 +241,9 @@
   }
   .right-2 {
     right: calc(var(--spacing) * 2);
+  }
+  .right-\[3\.5rem\] {
+    right: 3.5rem;
   }
   .bottom-0 {
     bottom: calc(var(--spacing) * 0);
@@ -494,8 +499,14 @@
       border-color: color-mix(in oklab, var(--color-white) 60%, transparent);
     }
   }
+  .bg-red-100 {
+    background-color: var(--color-red-100);
+  }
   .bg-slate-100 {
     background-color: var(--color-slate-100);
+  }
+  .bg-slate-200 {
+    background-color: var(--color-slate-200);
   }
   .bg-slate-400 {
     background-color: var(--color-slate-400);
@@ -562,9 +573,6 @@
   .p-2 {
     padding: calc(var(--spacing) * 2);
   }
-  .p-2\.5 {
-    padding: calc(var(--spacing) * 2.5);
-  }
   .p-3 {
     padding: calc(var(--spacing) * 3);
   }
@@ -592,8 +600,8 @@
   .pt-3 {
     padding-top: calc(var(--spacing) * 3);
   }
-  .pr-14 {
-    padding-right: calc(var(--spacing) * 14);
+  .pr-24 {
+    padding-right: calc(var(--spacing) * 24);
   }
   .pb-2 {
     padding-bottom: calc(var(--spacing) * 2);
@@ -667,11 +675,17 @@
   .text-purple-600 {
     color: var(--color-purple-600);
   }
+  .text-purple-700 {
+    color: var(--color-purple-700);
+  }
   .text-purple-800 {
     color: var(--color-purple-800);
   }
   .text-purple-900 {
     color: var(--color-purple-900);
+  }
+  .text-red-600 {
+    color: var(--color-red-600);
   }
   .text-slate-700 {
     color: var(--color-slate-700);
@@ -803,6 +817,13 @@
       }
     }
   }
+  .hover\:bg-slate-300 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-slate-300);
+      }
+    }
+  }
   .hover\:from-orange-600 {
     &:hover {
       @media (hover: hover) {
@@ -905,6 +926,11 @@
       position: relative;
     }
   }
+  .md\:right-16 {
+    @media (width >= 48rem) {
+      right: calc(var(--spacing) * 16);
+    }
+  }
   .md\:m-0 {
     @media (width >= 48rem) {
       margin: calc(var(--spacing) * 0);
@@ -988,6 +1014,11 @@
   .md\:rounded-3xl {
     @media (width >= 48rem) {
       border-radius: var(--radius-3xl);
+    }
+  }
+  .md\:p-2\.5 {
+    @media (width >= 48rem) {
+      padding: calc(var(--spacing) * 2.5);
     }
   }
   .md\:p-5 {
