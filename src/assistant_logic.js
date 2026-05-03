@@ -1,10 +1,10 @@
-const { GoogleGenAI } = require('@google/genai');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 const fs = require('fs');
 const path = require('path');
 
 // Note: Ensure dotenv is configured in your main entry file (e.g., index.js)
-// Initialize Gemini API client. It will automatically pick up GEMINI_API_KEY from environment.
-const ai = new GoogleGenAI({});
+// Initialize Gemini API client
+const ai = new GoogleGenerativeAI((process.env.GEMINI_API_KEY || '').trim());
 
 // Load mock election data
 const electionDataPath = path.join(__dirname, '../data/election_mock_data.json');
@@ -54,15 +54,14 @@ async function handleUserQuery(query, userContext = {}) {
   }
 
   try {
-    const response = await ai.models.generateContent({
+    const model = ai.getGenerativeModel({
       model: 'gemini-2.5-flash',
-      contents: query,
-      config: {
-        systemInstruction: systemInstruction,
-      }
+      systemInstruction: systemInstruction,
     });
 
-    return response.text;
+    const result = await model.generateContent(query);
+    const response = await result.response;
+    return response.text();
   } catch (error) {
     console.error("Error generating response from Gemini API:", error);
     return "I'm currently in demo mode. Try asking about registration or polling locations!";
